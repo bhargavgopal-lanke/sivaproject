@@ -83,9 +83,9 @@ router.get('/registration', csrfProtection, function (req, res) {
 
 /*router.get('/registration', (req,res) => res.render('registration'));*/
 router.get('/login', function(req,res) { 
-	console.log("Req user printing....>>>>>>>>>>")
+	console.log("Req user printing....>>>>>>>>>>");
 	console.log(req.user);
-	console.log("Req user authentication is printing....>>>>>>>>>>")
+	console.log("Req user authentication is printing....>>>>>>>>>>");
 	console.log(req.isAuthenticated());
 	res.render('login')
 });
@@ -310,7 +310,7 @@ router.get('/employeegrid', authenticationMiddleware(),(req,res)=>{
 
 });
 
-router.post('/delete', (req,res)=>{
+/*router.post('/delete', (req,res)=>{
 	var deleteId = req.body.id;
 	console.log("deleteId");
 	console.log(deleteId);
@@ -319,7 +319,7 @@ router.post('/delete', (req,res)=>{
 		if(err) throw err;
 		res.redirect('employeegrid')
 	})
-});
+});*/
 
 router.post('/employeeEdit',authenticationMiddleware(), (req,res)=>{
 	var firstname = req.body.firstname;
