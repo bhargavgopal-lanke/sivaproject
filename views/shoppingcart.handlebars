@@ -1,0 +1,78 @@
+
+ <div style="clear: both;overflow: hidden;">
+ <a href="/routing/shoppinghome" class="btn btn-primary float-right mb-3 d-block">Continue Shopping</a>
+ </div>
+
+<h1>Shopping Cart</h1>
+
+<div class="shopping-cart">
+ 
+  <div class="column-labels">
+    <label class="product-image">Image</label>
+    <label class="product-details">Product</label>
+    <label class="product-price">Price</label>
+    <label class="product-quantity">Quantity</label>
+    <label class="product-removal">Remove</label>
+    <label class="product-line-price">Total</label>
+  </div>
+ {{# if cartentities}}
+   {{#each cartentities}}
+  <div class="product">
+  
+            <div class="product-image">
+      <img src="/uploads/{{ productimageurl }}">
+    </div>
+    <div class="product-details">
+      <div class="product-title">{{this.title}}</div>
+      <p class="product-description"> {{this.prod_description}}</p>
+    </div>
+    <div class="product-price">{{this.productprice}}</div>
+    <div class="product-quantity">
+      <input type="number" value="{{this.qty}}" max="5">
+    </div>
+ 
+
+    <div class="product-removal">
+      
+       <a href="#" class="remove-product">Remove</a> 
+    
+    </div>
+    <div class="product-line-price">{{this.price}}</div>
+  </div>
+    {{/each}}
+  {{else}}
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="text-center">
+          <p>No Items in Cart</p>
+      </div>
+    </div>
+  </div>
+ {{/if}}
+  <div class="totals">
+    <div class="totals-item">
+      <label>Subtotal</label>
+      <div class="totals-value" id="cart-subtotal"></div>
+    </div>
+    <div class="totals-item">
+      <label>Tax (5%)</label>
+      <div class="totals-value" id="cart-tax">3.60</div>
+    </div>
+    <div class="totals-item">
+      <label>Shipping</label>
+      <div class="totals-value" id="cart-shipping">15.00</div>
+    </div>
+    <div class="totals-item totals-item-total">
+      <label>Grand Total</label>
+      <div class="totals-value" id="cart-total">90.57</div>
+    </div>
+  </div>
+   
+
+ 
+
+       
+      <button class="checkout">Checkout</button>
+ 
+</div>

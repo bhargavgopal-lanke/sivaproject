@@ -1,0 +1,17 @@
+<div class="container">
+<div class="row">
+	    {{#each shopresult}}
+	<div class="col-md-4 mb-3 ">
+		<div class="border p-2 ">
+		<p>{{product_id}}</p>
+		<h3>{{title}}</h3>
+		<img src="/uploads/{{ productimageurl }}" height="150px;">
+		<p>{{prod_description}}</p>
+		<span><strong>Qunatity : </strong>{{quantity}}</span>
+		<p><strong>Price: {{productprice}}</strong></p>
+		<a href="/routing/add-to-cart?id={{product_id}}" class="btn btn-primary">Add to cart</a>
+	</div>
+</div>	
+	    {{/each}}
+</div>
+</div>

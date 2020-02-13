@@ -1,0 +1,71 @@
+
+	<form action="/routing/search" class="example" method="post">
+		<div class="form-group" style="width:300px">
+			<label><strong>Search By Employee NAME</strong></label>
+			
+  			<input type="text" placeholder="Search.." class=" searchfield" name="employeeval">
+  			<button type="submit"><i class="fa fa-search"></i></button>
+
+		</div>	
+			</form>	
+
+<table class="table table-bordered" id="mytable">
+	<thead>
+		<tr>
+			<th>No.</th>
+			<th>Emp Id</th>
+			<th>Emp Name</th>
+			<!-- <th>Emp Status</th> -->
+			<th>Role</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each result}}
+		<tr data-id="{{main_id}}">
+			<td>{{ main_id }}</td>
+			<td>{{ emp_id }}</td>
+			<td>{{ first_name }}</td>
+			<!-- <td><button>Active</button></td> -->
+			<td>Consumer</td>
+			<td>
+				<a href="/routing/editEmployee?uid={{ main_id }}" class="btn btn-sm btn-info edit" data-id="{{ main_id }}" data-username="{{ username }}" data-email="{{ email }}">Edit</a>
+			 	<a href="javascript:void(0);" class="btn btn-sm btn-danger delete" data-id="{{ main_id }}" >Delete</a>
+			</td>
+		</tr>
+		{{/each}}
+	</tbody>
+</table>
+
+
+<!-- Delete Product Modal-->
+ 	  <form id="add-row-form" action="/routing/delete" method="post">
+ 	     <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+ 	        <div class="modal-dialog">
+ 	           <div class="modal-content">
+ 	               <div class="modal-header">
+						<h5 class="modal-title" id="myModalLabel">Delete Product</h5>
+ 	                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+ 	               </div>
+ 	               <div class="modal-body">
+					 <strong>Are You Sure To Delete This Data?</strong>
+ 	               </div>
+ 	               <div class="modal-footer">
+						<input type="hidden" name="id" class="form-control product_id2" required>
+ 	                   	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+ 	                  	<button type="submit" class="btn btn-success">Delete</button>
+ 	               </div>
+ 	      			</div>
+ 	        </div>
+ 	     </div>
+ 	 </form>
+
+ 	 <script>
+ 	 	$(document).ready(function(){
+ 		$('#mytable').on('click', '.delete', function(){
+ 			var id = $(this).data('id');
+ 			$('#DeleteModal').modal('show');
+ 			$('.product_id2').val(id);
+ 		});
+ 		});
+ 	 </script>

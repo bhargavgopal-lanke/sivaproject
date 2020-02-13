@@ -1,0 +1,112 @@
+<div style="width: 500px;margin: 0px auto;">
+	<div class="alert alert-danger" role="alert" id="error-group" style="display: none">
+			<ul id="errors">
+		
+	</ul>
+	</div>
+
+<form action="/routing/employeeRegistration" method="POST" enctype="multipart/form-data">
+	
+<!-- 	{{#if errors}}
+		{{#each errors}}
+			<div class="alert alert-danger">
+				{{errors}}
+			</div>
+		{{/each}}
+	{{/if}} -->
+
+	  <input type="hidden" name="_csrf" value="{{csrfToken}}" class="form-control" />
+	<div class="form-group">
+		<label>First Name:</label>
+		<input type="text" name="firstname" id="firstname" class="form-control" >
+	</div>
+	<div class="form-group">
+		<label>Last Name:</label>
+		<input type="text" name="lastname" id="lastname" class="form-control">
+	</div>
+	<div class="form-group" style="display: none;">
+		<label>Role:</label>
+		<input type="text" name="rolval" value="Consumer" class="form-control">
+	</div>
+<!-- 	<div class="form-group">
+		<label>Role:</label>
+		    <select name="rolval" id="rolVal" class="form-control mb-2">
+                <option value="">Select</option>
+    			<option value="Manager">Manager</option>
+    			<option value="Team Lead">Team Lead</option>
+    			<option value="Developer">Developer</option>
+    			<option value="Tester">Tester</option>
+            </select>
+	</div> -->
+	<div class="form-group">
+		<label>Employee Id:</label>
+		<input type="text" name="employeeval" class="form-control">
+	</div>
+	<div class="form-group">
+		<label>image Upload:</label>
+		<input name="myImage" type="file" class="form-control">
+	</div>
+	<div class="form-group">
+		<label>Username:</label>
+		<input type="text" name="username" class="form-control">
+	</div>
+	<div class="form-group">
+		<label>Password:</label>
+		<input type="password" name="password"  class="form-control">
+		
+	</div>
+	<div class="form-group">
+		<label>Mobile Number:</label>
+		<input type="number" name="mobnumber" id="txtPhoneNo"  onkeypress="ValidateNo();" class="form-control" pattern="[1-9]{1}[0-9]{9}">
+		 <span style="float:left;" id="errorMsg" class="dsNone error"></span>
+		 <span style="float:left;" id="successMsg" class="dsNone success">
+	</div>
+	<div class="form-group">
+		<label>Email:</label>
+		<input type="email" name="email" onkeypress="isEmail();" class="form-control">
+	</div>
+	<div class="form-group">
+		<input type="submit" class="btn btn-primary" id="" onclick="validateAndSubmit()"  name="submit">
+	</div>
+
+</form>
+<div class="form-group">
+	<a href="/routing/login" class="loginlinkstyle">Redirect To login page!</a>	
+</div>
+
+</div>
+
+<script>
+	$('#signup-btn').click(function () {
+  $.ajax({
+    url: '/routing/employeeRegistration',
+    type: 'POST',
+    cache: false,
+    data: {
+      firstname: $('#firstname').val(),
+      lastname: $('#lastname').val(),
+     /* weekday: $('#weekday').val(),
+      email: $('#email').val(),
+      phoneNumber: $('#phoneNumber').val(),
+      password: $('#password').val(),
+      confirmPassword: $('#confirmPassword').val()*/
+    },
+    success: function () {
+      $('#error-group').css('display', 'none');
+      /*alert('Your submission was successful');*/
+    },
+    error: function (data) {
+      $('#error-group').css('display', 'block');
+      var errors = JSON.parse(data.responseText);
+      var errorsContainer = $('#errors');
+      errorsContainer.innerHTML = '';
+      var errorsList = '';
+
+      for (var i = 0; i < errors.length; i++) {
+        errorsList += '<li>' + errors[i].msg + '</li>';
+      }
+      errorsContainer.html(errorsList);
+    }
+  });
+});
+</script>
