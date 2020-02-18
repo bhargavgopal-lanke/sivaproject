@@ -2,7 +2,10 @@
  <div style="clear: both;overflow: hidden;">
  <a href="/routing/shoppinghome" class="btn btn-primary float-right mb-3 d-block">Continue Shopping</a>
  </div>
-
+ <label>Cart Quantity...........</label>
+<span><i class="fas fa-shopping-cart"></i>{{session.cart.totalQty}}</span>
+  <!-- <span>storedItem....</span>
+  <div>{{session.cart.items}}</div> -->
 <h1>Shopping Cart</h1>
 
 <div class="shopping-cart">
@@ -18,7 +21,7 @@
  {{# if cartentities}}
    {{#each cartentities}}
   <div class="product">
-  
+
             <div class="product-image">
       <img src="/uploads/{{ productimageurl }}">
     </div>
@@ -34,7 +37,7 @@
 
     <div class="product-removal">
       
-       <a href="#" class="remove-product">Remove</a> 
+       <a href="/routing/removefromcart?removeId={{productId}}" class="remove-product">Remove</a> 
     
     </div>
     <div class="product-line-price">{{this.price}}</div>

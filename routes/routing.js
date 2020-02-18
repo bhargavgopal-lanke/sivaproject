@@ -107,8 +107,8 @@ router.get('/add-to-cart', function(req, res) {
 	var productId = req.query.id;
 	
 	var cart = new Cart(req.session.cart ? req.session.cart : {items: {}});	
-	 console.log("cart....////////");
-		console.log(cart);
+	 /*console.log("cart....////////");
+		console.log(cart);*/
 	var cartitemSql = 'SELECT * FROM testdb.trn_image where product_id = "'+ productId +'"';
 	var cartitemquery = db.query(cartitemSql, (err, cartitemResult)=>{
 		if(err){
@@ -117,8 +117,8 @@ router.get('/add-to-cart', function(req, res) {
 
 		cart.add(cartitemResult, productId);
 		req.session.cart = cart; 
-		console.log("<<<<...........Testing req.session.cart...............>>");
-		console.log(req.session.cart);
+	/*	console.log("<<<<...........Testing req.session.cart...............>>");
+		console.log(req.session.cart);*/
 		
 		res.redirect('shoppingcart');
     });
@@ -129,19 +129,22 @@ router.get('/shoppingcart', (req,res)=>{
 		return res.render('shoppingcart', { cartentities: null });
 	}
 	var cart = new Cart(req.session.cart);
-	console.log('Generate Array...>>>>>>>>>>>>>>>>>');
-	console.log(cart.generateArray());
 	res.render('shoppingcart', {cartentities: cart.generateArray()})
 });
 
-router.post('/removefromcart', (req,res,next)=> {
+router.get('/removefromcart', (req,res,next)=> {
 	//remove item from cart
-	if(req.session.cart){
-		delete req.session;
-		res.redirect('shoppinghome');
-	} else {
-		res.redirect('/');
-	}
+	var cart = new Cart(req.session.cart ? req.session.cart: {items: {}})
+	var removeProdurId = req.query.removeId;
+/*	console.log('cart Length...>>>>>>>>>>>>>>>>>');
+	console.log(req.session.cart.items[removeProdurId]);*/
+	var count = Object.keys(req.session.cart).length;
+	
+	var removeSelected = req.session.cart.items[removeProdurId];
+	console.log('cart remove Item...>>>>>>>>>>>>>>>>>');
+	console.log(removeSelected);
+		delete req.session.cart.items[removeProdurId];
+		res.redirect('shoppingcart');
 
 });
 
@@ -161,8 +164,6 @@ router.get('/', function(req,res, next){
 })
 
 router.post('/employeeRegistration', upload.single('myImage'),function(req,res){
-
-	const errors = validationResult(req);
 
 	var firstName = req.body.firstname;
 	var lastName = req.body.lastname;
@@ -319,7 +320,7 @@ router.get('/employeegrid', authenticationMiddleware(),(req,res)=>{
 		if(err) throw err;
 		res.redirect('employeegrid')
 	})
-});*/
+});*/	
 
 router.post('/employeeEdit',authenticationMiddleware(), (req,res)=>{
 	var firstname = req.body.firstname;

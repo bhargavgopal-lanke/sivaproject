@@ -10,8 +10,7 @@ module.exports = function Cart(oldCart) {
 		console.log(item);
 		console.log(item[0].productprice);*/
 		if(!storedItem)	{
-			/*storedItem = this.items[id] = { item: item, qty = 0, price: 0 };*/
-			storedItem = this.items[id] = { productimageurl: item[0].productimageurl,title: item[0].title, qty : 0,prod_description: item[0].prod_description,  price: item[0].productprice, productprice: item[0].productprice };
+			storedItem = this.items[id] = { productId : item[0].product_id, productimageurl: item[0].productimageurl,title: item[0].title, qty : 0,prod_description: item[0].prod_description,  price: item[0].productprice, productprice: item[0].productprice };
 		 }
 		 storedItem.qty++;
 		/* console.log(storedItem.price);*/
@@ -29,5 +28,8 @@ module.exports = function Cart(oldCart) {
 		}
 		return arr;
 	};
+/*	this.removeItem = function() {
+		
+	}*/
 
 };
