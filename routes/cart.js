@@ -28,8 +28,27 @@ module.exports = function Cart(oldCart) {
 		}
 		return arr;
 	};
-/*	this.removeItem = function() {
-		
-	}*/
+	this.removecartItem = function(cart, eachItemId) {
+		var getId = eachItemId.productId;
+		/*console.log("eachItemId................");
+		console.log(getId);*/
+		var cart = cart;
+	/*	console.log("eachItemId................Cart >>>>>>>>>>>>>>>>");
+		console.log(cart);*/
+		var count = Object.keys(cart).length;
+		 var getQty = cart.items[getId].qty;
+		 /*console.log("eachItemId................Cart >>>>>>>>>>>>>>>>");
+		console.log(getQty);*/
+
+		for(var id in this.items){
+			if(getId == this.items[id].productId) {
+				console.log("ProductId testing.............>>>>>>>>>>");
+				console.log(this.items[id].productId);
+				this.totalQty;
+				this.totalPrice -= this.items[id].price;
+				this.items[id].productprice -= this.items[id].price;
+			}
+		}
+	}
 
 };

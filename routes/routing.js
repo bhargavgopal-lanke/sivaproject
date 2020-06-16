@@ -83,75 +83,101 @@ router.get('/registration', csrfProtection, function (req, res) {
 
 /*router.get('/registration', (req,res) => res.render('registration'));*/
 router.get('/login', function(req,res) { 
-	console.log("Req user printing....>>>>>>>>>>");
-	console.log(req.user);
+
 	console.log("Req user authentication is printing....>>>>>>>>>>");
 	console.log(req.isAuthenticated());
 	res.render('login')
 });
+
 /*router.get('/shoppingcart', (req,res) => res.render('shoppingcart'));*/
+
 router.get('/shoppinghome', authenticationMiddleware(),(req,res)=>{
-		
+
+	var userId = req.session.passport.user.user_id;
 	var shoppingcartgetQuery = 'SELECT `product_id`,`title`,`productimageurl`,`productprice`,`quantity`,`prod_description` FROM `trn_image`';
-	/*var getQuery = 'SELECT `main_id`,`emp_id`,`first_name`,`role` FROM `employee_data` where main_id = "'+ req.query.uid +'"';*/
+	var getUserDetails = "SELECT `first_name`, `email` FROM testdb.employee_data WHERE main_id = '"+ userId +"';"
 	var resultQuery = db.query(shoppingcartgetQuery, (err, Imgtdataresult)=>{
 		if(err) throw err;
 		var resultImg = Imgtdataresult[0].img_url;
-		
-			res.render('shoppingitems',{ shopresult : Imgtdataresult, title: 'Shopping cart page'})
-		
+		db.query(getUserDetails, (err, userDeatilsResult)=> {
+			if(err) throw err;
+
+			res.render('shoppingitems',{ shopresult : Imgtdataresult,
+										 userDetails : userDeatilsResult,
+										 title: 'Shopping cart page'})		
+		})
 	}); 
 
 });
+
+/*Adding items to the cart..*/
+
 router.get('/add-to-cart', function(req, res) {
 	var productId = req.query.id;
-	
 	var cart = new Cart(req.session.cart ? req.session.cart : {items: {}});	
-	 /*console.log("cart....////////");
-		console.log(cart);*/
 	var cartitemSql = 'SELECT * FROM testdb.trn_image where product_id = "'+ productId +'"';
 	var cartitemquery = db.query(cartitemSql, (err, cartitemResult)=>{
 		if(err){
 			return res.redirect('/');
 		}
-
 		cart.add(cartitemResult, productId);
 		req.session.cart = cart; 
-	/*	console.log("<<<<...........Testing req.session.cart...............>>");
-		console.log(req.session.cart);*/
-		
-		res.redirect('shoppingcart');
+		return res.redirect('shoppingcart');
     });
 });
+
+router.get('/update-to-cart:productid', (req,res)=>{
+	var productId = req.params.productId;
+	console.log("productId............>>>>>>>>>>");
+	console.log(productId);
+	var count = object.keys(cart).length;
+	console.log("productId............>>>>>>>>>>");
+	console.log(count);
+	var action = req.query.action;
+	for(var i=0; i < count; i++){
+
+	}
+	return res.redirect('/shoppingcart');
+})
 
 router.get('/shoppingcart', (req,res)=>{
 	if(!req.session.cart) {
 		return res.render('shoppingcart', { cartentities: null });
 	}
 	var cart = new Cart(req.session.cart);
-	res.render('shoppingcart', {cartentities: cart.generateArray()})
+	req.session.cart = cart;
+	var totalPrice = cart.totalPrice;
+	res.render('shoppingcart', {
+		cartentities: cart.generateArray(),
+		totalQty: cart.totalQty,
+		totalPrice: cart.totalPrice
+	})
 });
 
 router.get('/removefromcart', (req,res,next)=> {
-	//remove item from cart
+
 	var cart = new Cart(req.session.cart ? req.session.cart: {items: {}})
 	var removeProdurId = req.query.removeId;
-/*	console.log('cart Length...>>>>>>>>>>>>>>>>>');
-	console.log(req.session.cart.items[removeProdurId]);*/
 	var count = Object.keys(req.session.cart).length;
-	
 	var removeSelected = req.session.cart.items[removeProdurId];
-	console.log('cart remove Item...>>>>>>>>>>>>>>>>>');
-	console.log(removeSelected);
-		delete req.session.cart.items[removeProdurId];
-		res.redirect('shoppingcart');
+	cart.removecartItem(cart, removeSelected);
+	delete req.session.cart.items[removeProdurId];
+	return res.redirect('shoppingcart');
 
 });
+
+router.get('/emptycart', (req,res)=>{
+	var cart = new Cart(req.session.cart ? req.session.cart: {items:{}});
+	req.session.cart = cart;
+	cart.totalQty = 0;
+	cart.totalPrice =0;
+	delete cart.items;
+	return res.redirect('shoppingcart');
+})
 
 router.get('/editEmployee', (req,res)=>{
 	var editSql = 'SELECT * FROM testdb.employee_data where main_id = "'+ req.query.uid +'"';
 	var editquery = db.query(editSql, (err, empResult)=>{
-	
 		if(err) throw err;
 		res.render("employeeEdit", {entities : empResult});
 	});
@@ -161,7 +187,7 @@ router.get('/', function(req,res, next){
 	console.log(req.user);
 	console.log(req.isAuthenticated());
 	res.render('home', { title: 'Home' });
-})
+});
 
 router.post('/employeeRegistration', upload.single('myImage'),function(req,res){
 
@@ -176,13 +202,8 @@ router.post('/employeeRegistration', upload.single('myImage'),function(req,res){
 	var salt = bcryptNodejs.genSaltSync(10);
 	var hash = bcryptNodejs.hashSync(pwd, salt);
 
-	 /* return res.render('registration', {
-      data: req.body,
-       csrfToken: req.csrfToken()
-    })*/
-
 	  bcrypt.hash(pwd, salt, function(err, hash){
-            /*if(err) throw err;*/
+
         pwd = hash;
         console.log("pwd is hashed here"); //shows hashed password
         console.log(pwd); //shows hashed password
@@ -201,13 +222,9 @@ router.post('/employeeRegistration', upload.single('myImage'),function(req,res){
        			}else{
        					var imgPath = req.file.filename;
        				   var insertQuery = 'INSERT INTO employee_data(first_name,last_name,role,emp_id,email,mob_no,user_name,password,img_url) VALUES ("'+ firstName +'","'+ lastName +'","'+ role +'","'+ empId +'","'+ email +'","'+ mobNumber +'","'+ username +'","'+ pwd +'", "'+ imgPath +'")'
-             /*upload(req, res, (err) => {*/
-			  /*    res.render('index', {
-			          msg: 'File Uploaded!',
-			          file: `uploads/${req.file}`
-			        });*/
- 			console.log("pwd iskjhjkh"); 
-            var query = db.query(insertQuery, function(err, result){
+       
+ 				console.log("pwd iskjhjkh"); 
+        	    var query = db.query(insertQuery, function(err, result){
             	if(err) throw err;
 
             	const main_id = result.insertId;
@@ -223,8 +240,8 @@ router.post('/employeeRegistration', upload.single('myImage'),function(req,res){
 
             	db.query('SELECT LAST_INSERT_ID() as user_id', function(err, result, fields){
             		if(err) throw err;
-            		const user_id = result[0];
-            		console.log(result[0]);
+            		const user_id = result[0].main_id;
+            		console.log(user_id);
             		req.login(user_id, function(err){
             			res.redirect('login');
             		})
@@ -244,16 +261,17 @@ router.post('/employeeRegistration', upload.single('myImage'),function(req,res){
 passport.serializeUser(function(user_id, done) {
   done(null, user_id);
 });
-
 passport.deserializeUser(function(user_id, done) {
-  
-    done(null, user_id);
-  
+	db.query('SELECT * FROM testdb.employee_data WHERE main_id ="'+user_id+'"', function(err, user_id){
+		if(err) throw err;
+		done(err, user_id);	
+	})
 });
+
+
 function authenticationMiddleware(){
 	return(req,res,next)=>{
-		console.log(
-			`req.session.passport.user:  ${JSON.stringify(req.session.passport)}`);
+		console.log(`req.session.passport.user:  ${JSON.stringify(req.session.passport.user.user_id)}`);
 		if(req.isAuthenticated()) return next();
 		res.redirect('login')
 	}
@@ -262,6 +280,11 @@ function authenticationMiddleware(){
 router.get('/profile', authenticationMiddleware(), function(req,res){
 	res.render('profile', {title: 'Profile'})
 });
+
+
+/*passport.deserializeUser(function(user_id, done) {
+    done(null, user_id);
+});*/
 
 router.post('/loginpage', passport.authenticate('local',{
 

@@ -1,5 +1,6 @@
 
  <div style="clear: both;overflow: hidden;">
+  <a href="/routing/emptycart" class="btn btn-danger float-right ml-4">Empty Cart</a>
  <a href="/routing/shoppinghome" class="btn btn-primary float-right mb-3 d-block">Continue Shopping</a>
  </div>
  <label>Cart Quantity...........</label>
@@ -31,7 +32,11 @@
     </div>
     <div class="product-price">{{this.productprice}}</div>
     <div class="product-quantity">
-      <input type="number" value="{{this.qty}}" max="5">
+      <!-- <input type="number" value="{{this.qty}}" max="5"> -->
+      <label>{{qty}}</label>
+      <input type="text" name="" value="{{productId}}">
+      <a href="/routing/update-to-cart/{{productId}}?action=add">+</a>&nbsp;
+      <a href="/routing/update-to-cart/{{productId}}?action=remove">-</a>&nbsp;
     </div>
  
 
@@ -43,6 +48,9 @@
     <div class="product-line-price">{{this.price}}</div>
   </div>
     {{/each}}
+    <div>
+     
+    </div>
   {{else}}
 
   <div class="row">
@@ -53,10 +61,11 @@
     </div>
   </div>
  {{/if}}
+  <h4><strong>Total Quantity:</strong> {{totalQty}}</h4>
   <div class="totals">
     <div class="totals-item">
       <label>Subtotal</label>
-      <div class="totals-value" id="cart-subtotal"></div>
+      <div class="totals-value" >{{ totalPrice }}</div>
     </div>
     <div class="totals-item">
       <label>Tax (5%)</label>
